@@ -10,7 +10,8 @@ describe('User router', () => {
         last_name: 'Doe',
         phone_number: '081123456789',
         bio: 'This is his bio.',
-        img_url: 'http://imgurl.com'
+        img_url: 'http://imgurl.com',
+        city: 'Jakarta Selatan'
     }
 
     describe('Register a user', () => {
@@ -36,6 +37,7 @@ describe('User router', () => {
                     expect(res.body).toHaveProperty('last_name', dataRegister.last_name)
                     expect(res.body).toHaveProperty('phone_number', dataRegister.phone_number)
                     expect(res.body).toHaveProperty('img_url', dataRegister.img_url)
+                    expect(res.body).toHaveProperty('city', dataRegister.city)
                     expect(res.body).toHaveProperty('hashedPassword', expect.any(String))
                     done()
                 })
@@ -127,6 +129,21 @@ describe('User router', () => {
                     .end((err, res) => {
                         expect(err).toBe(null)
                         expect(res.body).toHaveProperty('msg', 'Please insert your name')
+                        done()
+                    })
+                }) 
+            })
+
+            describe('City error', () => {
+                it('Should return empty validation error: 400', done => {
+                    supertest(app)
+                    .post('/register')
+                    .send({ ...dataRegister, city: '' })
+                    .expect('Content-Type', /json/)
+                    .expect(400)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Please insert your city adress')
                         done()
                     })
                 }) 
