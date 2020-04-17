@@ -237,7 +237,7 @@ describe('User router', () => {
 
         it('Should return a user data', (done) => {
             supertest(app)
-            .post(`/users/${id}`)
+            .get(`/users/${id}`)
             .end((err, res) => {
                 expect(err).toBe(null)
                 expect(res.body).toHaveProperty('first_name', dataRegister.first_name)
