@@ -211,4 +211,29 @@ describe('User router', () => {
             })
         });
     });
+
+    describe('Find a user', () => {
+        let id
+
+        supertest(app)
+        .post('/register')
+        .send(dataRegister)
+        .end((err, res) => {
+            id = res.body.id
+        })
+
+        it('Should return a user data', (done) => {
+            supertest(app)
+            .post(`/users/${id}`)
+            .end((err, res) => {
+                expect(err).toBe(null)
+                expect(res.body).toHaveProperty('first_name', dataRegister.first_name)
+                expect(res.body).toHaveProperty('last_name', dataRegister.last_name)
+                expect(res.body).toHaveProperty('phone_number', dataRegister.phone_number)
+                expect(res.body).toHaveProperty('img_url', dataRegister.img_url)
+                expect(res.body).toHaveProperty('bio', dataRegister.bio)
+                done()
+            })
+        });
+    });
 });
