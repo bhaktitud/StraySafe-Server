@@ -30,7 +30,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       status: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.INTEGER
       },
       request_user_id: {
         type: Sequelize.INTEGER,

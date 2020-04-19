@@ -45,8 +45,12 @@ class Controller {
   static create(req, res, next) {
     let createObj = {
       UserId: req.userId,
-      ProductId: req.body.productId,
-      qty: req.body.qty
+      name: req.body.name,
+      species: req.body.species,
+      birth_date: req.body.birth_date,
+      description: req.body.description,
+      status: req.body.status,
+      request_user_id: req.body.request_user_id,
     }
     Pet.create(createObj)
       .then((result) => {
