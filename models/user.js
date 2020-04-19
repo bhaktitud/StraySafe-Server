@@ -3,7 +3,8 @@
 const { hashPassword } = require('../helpers/bcrypt')
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+  class User extends sequelize.Sequelize.Model{}
+  User.init({
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -85,6 +86,8 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User'
   });
   User.associate = function(models) {
+    User.hasMany(models.Thread)
+    User.hasMany(models.Comment)
     // associations can be defined here
   };
   return User;
