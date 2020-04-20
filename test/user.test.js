@@ -1,6 +1,7 @@
 const supertest = require('supertest')
 const { queryInterface } = require('../models').sequelize
 const app = require('../app')
+const jwt = require('jsonwebtoken')
 
 describe('User router', () => {
     const dataRegister = {
@@ -16,13 +17,13 @@ describe('User router', () => {
 
     describe('Register a user', () => {
         describe('Register Success', () => {
-            afterEach(done => {
+            afterAll(done => {
                 queryInterface.bulkDelete('Users', {})
                 .then(_ => done)
                 .catch(err => console.log(err))
             })
 
-            it('Should return return an object containing all key with a hashed password (201)',
+            it('Should return return an object containing token',
             done => {
                 supertest(app)
                 .post('/register')
@@ -91,7 +92,7 @@ describe('User router', () => {
                 it('Should return empty validation error: 400', done => {
                     supertest(app)
                     .post('/register')
-                    .send({ ...dataRegister, password: '' })
+                    .send({ ...dataRegister, email: 'failtest@mail.com', password: '' })
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .end((err, res) => {
@@ -104,7 +105,7 @@ describe('User router', () => {
                 it('Should return length validation error: 400', done => {
                     supertest(app)
                     .post('/register')
-                    .send({ ...dataRegister, password: 'asd' })
+                    .send({ ...dataRegister, email: 'failtest@mail.com', password: 'asd' })
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .end((err, res) => {
@@ -119,7 +120,7 @@ describe('User router', () => {
                 it('Should return empty validation error: 400', done => {
                     supertest(app)
                     .post('/register')
-                    .send({ ...dataRegister, first_name: '' })
+                    .send({ ...dataRegister, email: 'failtest@mail.com', first_name: '' })
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .end((err, res) => {
@@ -134,7 +135,7 @@ describe('User router', () => {
                 it('Should return empty validation error: 400', done => {
                     supertest(app)
                     .post('/register')
-                    .send({ ...dataRegister, city: '' })
+                    .send({ ...dataRegister, email: 'failtest@mail.com', city: '' })
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .end((err, res) => {
@@ -149,7 +150,7 @@ describe('User router', () => {
                 it('Should return empty validation error: 400', done => {
                     supertest(app)
                     .post('/register')
-                    .send({ ...dataRegister, phone_number: '' })
+                    .send({ ...dataRegister, email: 'failtest@mail.com', phone_number: '' })
                     .expect('Content-Type', /json/)
                     .expect(400)
                     .end((err, res) => {
@@ -184,7 +185,7 @@ describe('User router', () => {
                 .post('/login')
                 .send(dataLogin)
                 .expect('Content-Type', /json/)
-                .expect(201)
+                .expect(200)
                 .end((err, res) => {
                     expect(err).toBe(null)
                     expect(res.body).toHaveProperty('token', expect.any(String))
@@ -226,25 +227,26 @@ describe('User router', () => {
     });
 
     describe('Find a user', () => {
-        let id
+        let idToSearch
 
-        supertest(app)
-        .post('/register')
-        .send(dataRegister)
-        .end((err, res) => {
-            id = res.body.id
-        })
+        
 
         it('Should return a user data', (done) => {
             supertest(app)
-            .get(`/users/${id}`)
-            .expect('Content-Type', /json/)
-            .expect(200)
+            .post('/register')
+            .send(dataRegister)
             .end((err, res) => {
-                expect(err).toBe(null)
-                expect(res.body).toHaveProperty('first_name', dataRegister.first_name)
-                expect(res.body).toHaveProperty('phone_number', dataRegister.phone_number)
-                done()
+                idToSearch = jwt.verify(res.body.token, process.env.SECRET_KEY).id
+                supertest(app)
+                .get(`/users/${idToSearch}`)
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end((err, res) => {
+                    expect(err).toBe(null)
+                    expect(res.body).toHaveProperty('first_name', dataRegister.first_name)
+                    expect(res.body).toHaveProperty('phone_number', dataRegister.phone_number)
+                    done()
+                })
             })
         });
     });

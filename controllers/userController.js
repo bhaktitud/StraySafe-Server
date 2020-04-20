@@ -68,7 +68,7 @@ class Controller {
         })
         .then(result => {
             const token = generateToken(result.id)
-            res.status(200).json({
+            res.status(201).json({
                 token,
                 first_name: result.first_name,
                 email: result.email,
