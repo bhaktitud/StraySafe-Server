@@ -5,15 +5,15 @@ class Controller {
         const data = {
             title: req.body.title,
             description: req.body.description,
-            longitude: req.body.longitude,
-            latitude: req.body.latitude,
-            UserId: req.decoded.id,
+            long: req.body.long,
+            lat: req.body.lat,
+            UserId: req.userId,
             status: 1
         }
 
         Thread.create(data)
-        .then(_ => {
-            res.status(201).json({ msg: 'Thread succesfully created' })
+        .then(({ id })=> {
+            res.status(201).json({ id, msg: 'Thread succesfully created' })
         })
         .catch(next)
     }
@@ -47,9 +47,17 @@ class Controller {
             }]
         })
         .then(result => {
-            res.status(200).json({
-                data: result
-            })
+            if(result) {
+                res.status(200).json({
+                    data: result
+                })
+            } else {
+                throw ({
+                    statusCode: 404,
+                    msg: 'Data not found'
+                })
+            }
+            
         })
         .catch(next)
     }
@@ -58,12 +66,11 @@ class Controller {
         const data = {
             title: req.body.title,
             description: req.body.description,
-            longitude: req.body.longitude,
-            latitude: req.body.latitude,
-            UserId: req.decoded.id,
+            long: req.body.long,
+            lat: req.body.lat,
+            UserId: req.userId,
             status: 1
         }
-
         Thread.update(data,{
             where: {
                 id: req.params.id
@@ -75,7 +82,7 @@ class Controller {
         .catch(next)
     }
 
-    static deleteThread(req, res ,ext){
+    static deleteThread(req, res , next){
         Thread.destroy({
             where: {
                 id: req.params.id
@@ -87,17 +94,18 @@ class Controller {
         .catch(next)
     }
 
-    static createComment(req, res ,ext){
+    static createComment(req, res , next){
         const data = {
             message: req.body.message,
             ThreadId: req.params.id,
-            UserId: req.decoded.id
+            UserId: req.userId
         }
 
         Comment.create(data)
         .then(_ => {
             res.status(201).json({ msg: 'Comment succesfully created' })
         })
+        .catch(next)
     }
 
 }
