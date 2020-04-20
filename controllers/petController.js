@@ -1,14 +1,11 @@
-const { Pet } = require('../models');
+const { Pet, User } = require('../models');
 const CustomError = require('../helpers/customError');
 const notFound = "Pet Not Found!";
+const dateCreator = require('../helpers/dateCreator');
 
 class Controller {
   static get(req, res, next) {
-    let UserId = req.userId;
     Pet.findAll({
-      where: {
-        UserId
-      },
       include: [
         {
           model: User
@@ -43,15 +40,16 @@ class Controller {
   }
 
   static create(req, res, next) {
-    let createObj = {
+    const { year, month } = req.body;
+    const birthDate = dateCreator.convert(year, month);
+    const createObj = {
       UserId: req.userId,
       name: req.body.name,
       species: req.body.species,
-      birth_date: req.body.birth_date,
-      description: req.body.description,
-      status: req.body.status,
-      request_user_id: req.body.request_user_id,
+      birth_date: birthDate,
+      description: req.body.description
     }
+
     Pet.create(createObj)
       .then((result) => {
         res.status(status).json({ data: result })
@@ -63,11 +61,14 @@ class Controller {
   }
 
   static update(req, res, next) {
-    let qty = req.body.qty
-    let isPaid = req.body.isPaid
-    let data = {
-      qty,
-      isPaid
+    const { year, month } = req.body;
+    const birthDate = dateCreator.convert(year, month);
+    const createObj = {
+      UserId: req.userId,
+      name: req.body.name,
+      species: req.body.species,
+      birth_date: birthDate,
+      description: req.body.description
     }
     if (Number(req.params.id)) {
       Pet.update(data, {
@@ -122,7 +123,7 @@ class Controller {
       })
         .then((result) => {
           deletedData = result;
-          if(result) {
+          if (result) {
             return Pet.destroy({
               where: {
                 id: result.id

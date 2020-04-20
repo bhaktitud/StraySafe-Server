@@ -76,7 +76,7 @@ describe('Thread Router', () => {
                 .expect(201)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Thread succesfully created.')
+                    expect(res.body).toHaveProperty('msg', 'Thread succesfully created')
                     done()
                 })
             });
@@ -101,7 +101,21 @@ describe('Thread Router', () => {
                 supertest(app)
                 .post('/threads')
                 .set('token', token)
-                .send({ ...newThreadData, longitude: '', last_name: '' })
+                .send({ ...newThreadData, longitude: '' })
+                .expect('Content-Type', /json/)
+                .expect(400)
+                .end((err, res) => {
+                    expect(err).toBe(null)
+                    expect(res.body).toHaveProperty('msg', 'Please choose the location')
+                    done()
+                })
+            })
+
+            it('Should return an empty long/lat error: 400', (done) => {
+                supertest(app)
+                .post('/threads')
+                .set('token', token)
+                .send({ ...newThreadData, latitude: '' })
                 .expect('Content-Type', /json/)
                 .expect(400)
                 .end((err, res) => {
@@ -203,10 +217,10 @@ describe('Thread Router', () => {
                 .set('token', token)
                 .send({ description: 'new description' })
                 .expect('Content-Type', /json/)
-                .expect(201)
+                .expect(200)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Thread succesfully edited.')
+                    expect(res.body).toHaveProperty('msg', 'Thread succesfully edited')
                     done()
                 })
             });
@@ -291,25 +305,10 @@ describe('Thread Router', () => {
             .set('token', token2)
             .send({ message: '' })
             .expect('Content-Type', /json/)
-            .expect(201)
+            .expect(400)
             .end((err, res) => {
                 expect(err).toBe(null)
                 expect(res.body).toHaveProperty('msg', 'Please insert your message')
-                done()
-            })
-        });
-    });
-
-    describe('Delete a comment', () => {
-        it('Should return a success message: 200', (done) => {
-            supertest(app)
-            .delete(`/threads/comment/${commentId}`)
-            .set('token', token2)
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-                expect(err).toBe(null)
-                expect(res.body).toHaveProperty('msg', 'Comment succesfully deleted.')
                 done()
             })
         });
@@ -325,7 +324,7 @@ describe('Thread Router', () => {
                 .expect(200)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Thread succesfully deleted.')
+                    expect(res.body).toHaveProperty('msg', 'Thread succesfully deleted')
                     done()
                 })
             });
