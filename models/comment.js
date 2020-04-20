@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     ThreadId: DataTypes.INTEGER,
     message: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notNull: {
           msg: 'Please insert your message'
