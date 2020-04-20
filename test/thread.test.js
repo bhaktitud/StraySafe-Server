@@ -11,7 +11,7 @@ describe('Thread Router', () => {
     })
 
     const userData = {
-        email: 'User1@mail.com',
+        email: 'User123@mail.com',
         password: 'password1',
         first_name: 'John',
         last_name: 'Doe',
@@ -32,31 +32,35 @@ describe('Thread Router', () => {
         city: 'Jakarta Selatan'
     }
 
+    const userData3 = {
+        email: 'User221@mail.com',
+        password: 'password2',
+        first_name: 'John2',
+        last_name: 'Doe2',
+        phone_number: '081123456789',
+        bio: 'This is his bio.',
+        img_url: 'http://imgurl.com',
+        city: 'Jakarta Selatan'
+    }
+
     const newThreadData = {
         title: '5 Kitten found',
         description: 'this is the description',
-        longitude: 10.203,
-        latitude: -40.5,
+        long: 10.203,
+        lat: -40.5,
     }
 
     const newThreadData2 = {
         title: '2 Kitten found',
         description: 'this is the description',
-        longitude: 20.203,
-        latitude: -10.5,
+        long: 20.203,
+        lat: -10.5,
     }
 
     let token
     let token2
     let idToFind
     let commentId
-
-    supertest(app)
-    .post('/register')
-    .send(userData)
-    .end((err, res) => {
-       token = res.body.token
-    })
 
     supertest(app)
     .post('/register')
@@ -69,15 +73,21 @@ describe('Thread Router', () => {
         describe('Successfully created a thread', () => {
             it('Should return a success message: 201', (done) => {
                 supertest(app)
-                .post('/threads')
-                .set('token', token)
-                .send(newThreadData)
-                .expect('Content-Type', /json/)
-                .expect(201)
+                .post('/register')
+                .send(userData)
                 .end((err, res) => {
-                    expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Thread succesfully created')
-                    done()
+                    token = res.body.token
+                    supertest(app)
+                    .post('/threads')
+                    .set('token', token)
+                    .send(newThreadData)
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Thread succesfully created')
+                        done()
+                    })
                 })
             });
         });
@@ -101,7 +111,7 @@ describe('Thread Router', () => {
                 supertest(app)
                 .post('/threads')
                 .set('token', token)
-                .send({ ...newThreadData, longitude: '' })
+                .send({ ...newThreadData, long: '' })
                 .expect('Content-Type', /json/)
                 .expect(400)
                 .end((err, res) => {
@@ -115,7 +125,7 @@ describe('Thread Router', () => {
                 supertest(app)
                 .post('/threads')
                 .set('token', token)
-                .send({ ...newThreadData, latitude: '' })
+                .send({ ...newThreadData, lat: '' })
                 .expect('Content-Type', /json/)
                 .expect(400)
                 .end((err, res) => {
@@ -133,7 +143,7 @@ describe('Thread Router', () => {
                 .expect(401)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Please login first')
+                    expect(res.body).toHaveProperty('msg', 'invalid token!')
                     done()
                 })
             })
@@ -141,35 +151,28 @@ describe('Thread Router', () => {
     });
 
     describe('Fetching threads', () => {
-        supertest(app)
-        .post('/threads')
-        .set('token', token)
-        .send(newThreadData2)
-
         describe('Find all', () => {
             it('Should return array of thread object', (done) => {
                 supertest(app)
-                .get('/threads')
-                .expect('Content-Type', /json/)
-                .expect(200)
+                .post('/threads')
+                .set('token', token)
+                .send(newThreadData2)
                 .end((err, res) => {
-                    expect(err).toBe(null)
-                    expect(res.body.data[0]).toHaveProperty('id', expect.any(Number))
-                    idToFind = res.body.data[0].id
-                    expect(res.body.data[0]).toHaveProperty('title', expect.any(String))
-                    expect(res.body.data[0]).toHaveProperty('description', expect.any(String))
-                    expect(res.body.data[0]).toHaveProperty('longitude', expect.any(Number))
-                    expect(res.body.data[0]).toHaveProperty('latitude', expect.any(Number))
-                    expect(res.body.data[0]).toHaveProperty('status', expect.any(String))
-                    expect(res.body.data[0]).toHaveProperty('Users', expect.any(Array))
-                    expect(res.body.data[1]).toHaveProperty('id', expect.any(Number))
-                    expect(res.body.data[1]).toHaveProperty('title', expect.any(String))
-                    expect(res.body.data[1]).toHaveProperty('description', expect.any(String))
-                    expect(res.body.data[1]).toHaveProperty('longitude', expect.any(Number))
-                    expect(res.body.data[1]).toHaveProperty('latitude', expect.any(Number))
-                    expect(res.body.data[1]).toHaveProperty('status', expect.any(String))
-                    expect(res.body.data[1]).toHaveProperty('Users', expect.any(Array))
-                    done()
+                    supertest(app)
+                    .get('/threads')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body.data[0]).toHaveProperty('id', expect.any(Number))
+                        idToFind = res.body.data[0].id
+                        expect(res.body.data[0]).toHaveProperty('title', expect.any(String))
+                        expect(res.body.data[0]).toHaveProperty('description', expect.any(String))
+                        expect(res.body.data[0]).toHaveProperty('long', expect.any(String))
+                        expect(res.body.data[0]).toHaveProperty('lat', expect.any(String))
+                        expect(res.body.data[0]).toHaveProperty('status', expect.any(Number))
+                        done()
+                    })
                 })
             })
         })
@@ -177,32 +180,36 @@ describe('Thread Router', () => {
         describe('Find one', () => {
             it('Should return array of thread object', (done) => {
                 supertest(app)
-                .get(`/threads/${idToFind}`)
-                .expect('Content-Type', /json/)
-                .expect(200)
+                .post('/threads')
+                .set('token', token)
+                .send(newThreadData2)
                 .end((err, res) => {
-                    expect(err).toBe(null)
-                    expect(res.body.data).toHaveProperty('id', expect.any(Number))
-                    expect(res.body.data).toHaveProperty('title', expect.any(String))
-                    expect(res.body.data).toHaveProperty('description', expect.any(String))
-                    expect(res.body.data).toHaveProperty('longitude', expect.any(Number))
-                    expect(res.body.data).toHaveProperty('latitude', expect.any(Number))
-                    expect(res.body.data).toHaveProperty('status', expect.any(String))
-                    expect(res.body.data).toHaveProperty('Users', expect.any(Array))
-                    expect(res.body.data).toHaveProperty('Comments', expect.any(Array))
-                    commentId = res.body.data.Comments[0].id
-                    done()
+                    idToFind = res.body.id
+                    supertest(app)
+                    .get(`/threads/${idToFind}`)
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body.data).toHaveProperty('id', expect.any(Number))
+                        expect(res.body.data).toHaveProperty('title', expect.any(String))
+                        expect(res.body.data).toHaveProperty('description', expect.any(String))
+                        expect(res.body.data).toHaveProperty('long', expect.any(String))
+                        expect(res.body.data).toHaveProperty('lat', expect.any(String))
+                        expect(res.body.data).toHaveProperty('status', expect.any(Number))
+                        done()
+                    })
                 })
             })
 
             it('Should return a 404 error', (done) => {
                 supertest(app)
-                .get(`/threads/${-1}`)
+                .get(`/threads/0`)
                 .expect('Content-Type', /json/)
                 .expect(404)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Data not found.')
+                    expect(res.body).toHaveProperty('msg', 'Data not found')
                     done()
                 })
             })
@@ -213,15 +220,22 @@ describe('Thread Router', () => {
         describe('Edit thread success', () => {
             it('Should return a success message: 200', (done) => {
                 supertest(app)
-                .put(`/threads/${idToFind}`)
+                .post('/threads')
                 .set('token', token)
-                .send({ description: 'new description' })
-                .expect('Content-Type', /json/)
-                .expect(200)
+                .send(newThreadData2)
                 .end((err, res) => {
-                    expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Thread succesfully edited')
-                    done()
+                    idToFind = res.body.id
+                    supertest(app)
+                    .put(`/threads/${idToFind}`)
+                    .set('token', token)
+                    .send({ description: 'new description' })
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Thread succesfully edited')
+                        done()
+                    })
                 })
             });
         });
@@ -245,7 +259,7 @@ describe('Thread Router', () => {
                 supertest(app)
                 .put(`/threads/${idToFind}`)
                 .set('token', token)
-                .send({ longitude: '', last_name: '' })
+                .send({ long: '', last_name: '' })
                 .expect('Content-Type', /json/)
                 .expect(400)
                 .end((err, res) => {
@@ -263,7 +277,7 @@ describe('Thread Router', () => {
                 .expect(401)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Please login first')
+                    expect(res.body).toHaveProperty('msg', 'invalid token!')
                     done()
                 })
             })
@@ -287,29 +301,53 @@ describe('Thread Router', () => {
     describe('Create a comment', () => {
         it('Should return a success message: 201', (done) => {
             supertest(app)
-            .post(`/threads/${idToFind}`)
-            .set('token', token2)
-            .send({ message: 'Udah saya bantuin.' })
-            .expect('Content-Type', /json/)
-            .expect(201)
+            .post('/threads')
+            .set('token', token)
+            .send(newThreadData2)
             .end((err, res) => {
-                expect(err).toBe(null)
-                expect(res.body).toHaveProperty('msg', 'Comment succesfully created')
-                done()
+                idToFind = res.body.id
+                supertest(app)
+                .post('/register')
+                .send(userData3)
+                .end((err, res) => {
+                    supertest(app)
+                    .post(`/threads/${idToFind}`)
+                    .set('token', res.body.token)
+                    .send({ message: 'Udah saya bantuin.' })
+                    .expect('Content-Type', /json/)
+                    .expect(201)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Comment succesfully created')
+                        done()
+                    })
+                })
             })
         });
 
-        it('Should return a message validation error: 201', (done) => {
+        it('Should return a message validation error: 400', (done) => {
             supertest(app)
-            .post(`/threads/${idToFind}`)
-            .set('token', token2)
-            .send({ message: '' })
-            .expect('Content-Type', /json/)
-            .expect(400)
+            .post('/threads')
+            .set('token', token)
+            .send(newThreadData2)
             .end((err, res) => {
-                expect(err).toBe(null)
-                expect(res.body).toHaveProperty('msg', 'Please insert your message')
-                done()
+                idToFind = res.body.id
+                supertest(app)
+                .post('/register')
+                .send({...userData3, email: 'email2@mail.com'})
+                .end((err, res) => {
+                    supertest(app)
+                    .post(`/threads/${idToFind}`)
+                    .set('token', res.body.token)
+                    .send({ message: '' })
+                    .expect('Content-Type', /json/)
+                    .expect(400)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Please insert your message')
+                        done()
+                    })
+                })
             })
         });
     });
@@ -318,14 +356,21 @@ describe('Thread Router', () => {
         describe('Delete a thread success', () => {
             it('Should return a success message: 200', (done) => {
                 supertest(app)
-                .delete(`/threads/${idToFind}`)
+                .post('/threads')
                 .set('token', token)
-                .expect('Content-Type', /json/)
-                .expect(200)
+                .send(newThreadData2)
                 .end((err, res) => {
-                    expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Thread succesfully deleted')
-                    done()
+                    idToFind = res.body.id
+                    supertest(app)
+                    .delete(`/threads/${idToFind}`)
+                    .set('token', token)
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Thread succesfully deleted')
+                        done()
+                    })
                 })
             });
         });
@@ -338,21 +383,28 @@ describe('Thread Router', () => {
                 .expect(401)
                 .end((err, res) => {
                     expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'Please login first')
+                    expect(res.body).toHaveProperty('msg', 'invalid token!')
                     done()
                 })
             })
 
             it('Should return unauthorized error: 401', (done) => {
                 supertest(app)
-                .put(`/threads/${idToFind}`)
-                .set('token', token2)
-                .expect('Content-Type', /json/)
-                .expect(401)
+                .post('/threads')
+                .set('token', token)
+                .send(newThreadData2)
                 .end((err, res) => {
-                    expect(err).toBe(null)
-                    expect(res.body).toHaveProperty('msg', 'You are not authorized')
-                    done()
+                    idToFind = res.body.id
+                    supertest(app)
+                    .delete(`/threads/${idToFind}`)
+                    .set('token', token2)
+                    .expect('Content-Type', /json/)
+                    .expect(401)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'You are not authorized')
+                        done()
+                    })
                 })
             })
         })

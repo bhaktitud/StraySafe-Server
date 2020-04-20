@@ -86,8 +86,8 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User'
   });
   User.associate = function(models) {
-    // User.hasMany(models.Thread)
-    // User.hasMany(models.Comment)
+    User.hasMany(models.Thread)
+    User.hasMany(models.Comment)
     User.hasMany(models.Pet)
   };
   return User;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "test": "NODE_ENV=test jest thread.test.js --detectOpenHandles",
     "testwin": "SET NODE_ENV=test&& jest --detectOpenHandles",
     "dev": "NODE_ENV=development nodemon bin/http.js",
     "devwin": "SET NODE_ENV=development&& nodemon bin/http.js",
