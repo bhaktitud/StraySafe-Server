@@ -9,7 +9,8 @@ function convert(year, month){
   let date = new Date().getDate();
   let newMonth = new Date().getMonth() + 1 - month;
   let newYear = new Date().getFullYear() - year;
-  return `${year}-${month}-${date}`
+  let result = new Date(`${newYear}-${newMonth}-${date}`);
+  return result;
 }
 
 module.exports = {

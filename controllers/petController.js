@@ -50,9 +50,15 @@ class Controller {
       description: req.body.description
     }
 
-    Pet.create(createObj)
+    Pet.create(createObj, {
+      include: [
+        {
+          model: User
+        }
+      ]
+    })
       .then((result) => {
-        res.status(status).json({ data: result })
+        res.status(201).json({ data: result })
       })
       .catch((err) => {
         console.log(err);
@@ -62,8 +68,11 @@ class Controller {
 
   static update(req, res, next) {
     const { year, month } = req.body;
-    const birthDate = dateCreator.convert(year, month);
-    const createObj = {
+    let birthDate;
+    if (year || month) {
+      birthDate = dateCreator.convert(year, month);
+    }
+    const data = {
       UserId: req.userId,
       name: req.body.name,
       species: req.body.species,
@@ -75,6 +84,11 @@ class Controller {
         where: {
           id: req.params.id
         },
+        include: [
+          {
+            model: User
+          }
+        ],
         returning: true,
       })
         .then((result) => {

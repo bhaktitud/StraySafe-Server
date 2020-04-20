@@ -1,8 +1,10 @@
 "use strict"
 
-module.exports = function(err, req, res, next){
-    if(err.name){
-        switch(err.name){
+module.exports = function (err, req, res, next) {
+    console.log("masuk error");
+    console.log(err);
+    if (err.name) {
+        switch (err.name) {
             case "SequelizeConnectionError":
                 res.status(500).json({
                     msg: err.message
@@ -13,7 +15,7 @@ module.exports = function(err, req, res, next){
                     msg: err.errors[0].message
                 })
                 break
-            case "SequelizeDatabaseError": 
+            case "SequelizeDatabaseError":
                 res.status(400).json({
                     msg: err.message
                 })
@@ -25,7 +27,7 @@ module.exports = function(err, req, res, next){
                 break
         }
     }
-    if(err.statusCode){
+    if (err.statusCode) {
         res.status(err.statusCode).json({
             msg: err.msg
         })

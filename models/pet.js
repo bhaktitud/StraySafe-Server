@@ -36,7 +36,8 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeCreate(pet, options) {
         if (!pet.status) {
-          pet.status = 0
+          console.log("masuk hooks")
+          pet.status = 1
         }
         if (!pet.name) {
           pet.name = "no name"
