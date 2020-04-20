@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Comment'
+    modelName: 'Thread'
   });
   Thread.associate = function(models) {
     Thread.hasMany(models.Comment)
