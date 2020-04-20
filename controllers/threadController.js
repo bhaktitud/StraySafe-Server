@@ -82,6 +82,30 @@ class Controller {
         .catch(next)
     }
 
+    static updateStatusUp(req, res, next){
+        Thread.increment('status', {
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(result => {
+            res.status(200).json({ msg: 'Status updated' }) 
+        })
+        .catch(next)
+    }
+
+    static updateStatusDown(req, res, next){
+        Thread.decrement('status', {
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(result => {
+            res.status(200).json({ msg: 'Status updated' }) 
+        })
+        .catch(next)
+    }
+
     static deleteThread(req, res , next){
         Thread.destroy({
             where: {
