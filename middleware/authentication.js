@@ -6,7 +6,6 @@ const invalid = "invalid token!";
 function authentication(req, res, next) {
   let token = req.headers.token;
   if (!token) {
-    console.log("masuk");
     throw new CustomError(401, invalid);
   } else {
     try {
@@ -24,7 +23,7 @@ function authentication(req, res, next) {
           next(new CustomError(401, invalid));
         });
     } catch (error) {
-      next(error);
+      next(new CustomError(401, invalid));
     }
   }
 }

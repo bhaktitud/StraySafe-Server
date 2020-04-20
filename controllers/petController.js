@@ -32,7 +32,11 @@ class Controller {
       ]
     })
       .then((result) => {
-        res.status(200).json({ data: result })
+        if(result) {
+          res.status(200).json({ data: result })
+        } else {
+          throw new CustomError(404, "Pet Not Found!")
+        }
       }).catch((err) => {
         console.log(err);
         next(err);
@@ -104,7 +108,7 @@ class Controller {
   }
 
   static updateRequest(req, res, next) {
-    let request_user_id = req.body.request_user_id
+    let request_user_id = req.userId
     let data = {
       request_user_id
     }
