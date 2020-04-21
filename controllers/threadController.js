@@ -8,6 +8,7 @@ class Controller {
             long: req.body.long,
             lat: req.body.lat,
             UserId: req.userId,
+            img_url: req.body.img_url,
             status: 1
         }
 
