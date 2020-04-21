@@ -45,7 +45,8 @@ class Controller {
 
   static create(req, res, next) {
     const { year, month } = req.body;
-    const birthDate = dateCreator.convert(year, month);
+    // const birthDate = dateCreator.convert(year, month);
+    const birthDate = dateCreator.setDate(year, month);
     const createObj = {
       UserId: req.userId,
       name: req.body.name,
@@ -75,7 +76,8 @@ class Controller {
     const { year, month } = req.body;
     let birthDate;
     if (year || month) {
-      birthDate = dateCreator.convert(year, month);
+      // birthDate = dateCreator.convert(year, month);
+      birthDate = dateCreator.setDate(year, month);
     }
     const data = {
       UserId: req.userId,
