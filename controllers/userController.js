@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Thread } = require('../models')
 const { verifyPassword } = require('../helpers/bcrypt')
 const { generateToken } = require('../helpers/jwt')
 
@@ -9,6 +9,9 @@ class Controller {
         User.findOne({
             where: {
                 email
+            },
+            include: {
+                model: Thread
             }
         })
         .then(result => {
@@ -20,12 +23,14 @@ class Controller {
             }else {
                 if(verifyPassword(password, result.password)){
                     const token = generateToken(result.id)
+                    console.log(result.Threads)
                     res.status(200).json({
                         token,
                         id: result.id,
                         first_name: result.first_name,
                         email: result.email,
                         img_url: result.img_url,
+                        Threads: result.Threads
                     })
                 }
                 else{
