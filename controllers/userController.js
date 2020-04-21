@@ -30,6 +30,7 @@ class Controller {
                         first_name: result.first_name,
                         email: result.email,
                         img_url: result.img_url,
+                        city: result.city,
                         Threads: result.Threads
                     })
                 }
@@ -80,6 +81,7 @@ class Controller {
                 first_name: result.first_name,
                 email: result.email,
                 img_url: result.img_url,
+                city: result.city,
             })
         })
         .catch(next)
@@ -101,6 +103,7 @@ class Controller {
                 phone_number: result.phone_number,
                 email: result.email,
                 img_url: result.img_url,
+                city: result.city,
                 bio: result.bio || '',
                 id: result.id
             })
