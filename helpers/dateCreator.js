@@ -13,6 +13,19 @@ function convert(year, month){
   return result;
 }
 
+function setDate(year, month){
+  if(!year || !Number(year)) {
+    year = new Date().getFullYear();
+  }
+  if(!month || !Number(month)) {
+    month = new Date().getMonth() + 1;
+  }
+
+  let result = new Date(`${year}-${month}-01`);
+  return result;
+}
+
 module.exports = {
-  convert
+  convert,
+  setDate
 }
