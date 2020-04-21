@@ -84,7 +84,8 @@ class Controller {
       name: req.body.name,
       species: req.body.species,
       birth_date: birthDate,
-      description: req.body.description
+      description: req.body.description,
+      img_url: req.body.img_url
     }
     if (Number(req.params.id)) {
       Pet.update(data, {
