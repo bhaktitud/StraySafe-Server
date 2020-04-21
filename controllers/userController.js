@@ -22,6 +22,7 @@ class Controller {
                     const token = generateToken(result.id)
                     res.status(200).json({
                         token,
+                        id: result.id,
                         first_name: result.first_name,
                         email: result.email,
                         img_url: result.img_url,
@@ -70,6 +71,7 @@ class Controller {
             const token = generateToken(result.id)
             res.status(201).json({
                 token,
+                id: result.id,
                 first_name: result.first_name,
                 email: result.email,
                 img_url: result.img_url,
@@ -93,7 +95,8 @@ class Controller {
                 last_name: result.last_name || '',
                 phone_number: result.phone_number,
                 img_url: result.img_url,
-                bio: result.bio || ''
+                bio: result.bio || '',
+                id: result.id
             })
         })
         .catch(next)
