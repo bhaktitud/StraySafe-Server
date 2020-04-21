@@ -82,8 +82,10 @@ class Controller {
         .catch(next)
     }
 
-    static updateStatusUp(req, res, next){
-        Thread.increment('status', {
+    static updateStatusUnresolved(req, res, next){
+        Thread.update({
+            status: 1
+        }, {
             where: {
                 id: req.params.id
             }
@@ -94,8 +96,24 @@ class Controller {
         .catch(next)
     }
 
-    static updateStatusDown(req, res, next){
-        Thread.decrement('status', {
+    static updateStatusRequested(req, res, next){
+        Thread.update({
+            status: 2
+        }, {
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(result => {
+            res.status(200).json({ msg: 'Status updated' }) 
+        })
+        .catch(next)
+    }
+
+    static updateStatusResolved(req, res, next){
+        Thread.update({
+            status: 3
+        }, {
             where: {
                 id: req.params.id
             }

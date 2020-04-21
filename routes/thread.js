@@ -5,8 +5,9 @@ const authhorization =  require('../middleware/authorizationThread');
 
 router.get('/', threadController.fetchAllThread)
 router.get('/:id', threadController.fetchThreadById)
-router.put('/statusUp/:id', threadController.updateStatusUp)
-router.put('/statusDown/:id', threadController.updateStatusDown)
+router.put('/statusUnresolved/:id', threadController.updateStatusUnresolved)
+router.put('/statusRequested/:id', threadController.updateStatusRequested)
+router.put('/statusResolved/:id', threadController.updateStatusResolved)
 router.post('/', authentication, threadController.createThread)
 router.post('/:id', authentication, threadController.createComment)
 router.put('/:id', authentication, authhorization, threadController.editThread)
