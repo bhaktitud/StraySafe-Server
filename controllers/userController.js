@@ -99,6 +99,7 @@ class Controller {
                 first_name: result.first_name,
                 last_name: result.last_name || '',
                 phone_number: result.phone_number,
+                email: result.email,
                 img_url: result.img_url,
                 bio: result.bio || '',
                 id: result.id
