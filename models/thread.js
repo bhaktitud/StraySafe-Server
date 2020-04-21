@@ -40,7 +40,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     UserId: DataTypes.INTEGER,
-    status: DataTypes.INTEGER
+    status: DataTypes.INTEGER,
+    img_url: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Thread'

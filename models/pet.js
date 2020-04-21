@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     status: DataTypes.INTEGER,
-    request_user_id: DataTypes.INTEGER
+    request_user_id: DataTypes.INTEGER,
+    img_url: DataTypes.STRING
   }, {
     hooks: {
       beforeCreate(pet, options) {
