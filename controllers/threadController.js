@@ -42,7 +42,8 @@ class Controller {
                 id: req.params.id
             },
             include: [{
-                model: Comment
+                model: Comment,
+                include: [{ model : User }]
             }, {
                 model: User
             }]
