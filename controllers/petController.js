@@ -14,10 +14,7 @@ class Controller {
     })
       .then((result) => {
         res.status(200).json({ data: result })
-      }).catch((err) => {
-        console.log(err);
-        next(err);
-      });
+      }).catch(next)
   }
 
   static getById(req, res, next) {
@@ -74,11 +71,7 @@ class Controller {
 
   static update(req, res, next) {
     const { year, month } = req.body;
-    let birthDate;
-    if (year || month) {
-      // birthDate = dateCreator.convert(year, month);
-      birthDate = dateCreator.setDate(year, month);
-    }
+    let birthDate = dateCreator.setDate(year, month);
     const data = {
       UserId: req.userId,
       name: req.body.name,
@@ -105,10 +98,7 @@ class Controller {
           console.log(err);
           next(err);
         });
-    } else {
-      let err = new CustomError(400, "Bad Request")
-      next(err)
-    }
+    } 
   }
 
   static updateRequest(req, res, next) {
@@ -116,54 +106,39 @@ class Controller {
     let data = {
       request_user_id
     }
-    if (Number(req.params.id)) {
-      Pet.update(data, {
-        where: {
-          id: req.params.id
-        },
-        returning: true,
-      })
-        .then((result) => {
-          res.status(200).json({ data: result[1][0] })
-        }).catch((err) => {
-          console.log(err);
-          next(err);
-        });
-    } else {
-      let err = new CustomError(400, "Bad Request")
-      next(err)
-    }
+    Pet.update(data, {
+      where: {
+        id: req.params.id
+      },
+      returning: true,
+    })
+      .then((result) => {
+        res.status(200).json({ data: result[1][0] })
+      }).catch(next)
   }
 
   static delete(req, res, next) {
     let deletedData;
-    if (Number(req.params.id)) {
-      Pet.findOne({
-        where: {
-          id: req.params.id
+    Pet.findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+      .then((result) => {
+        deletedData = result;
+        if (result) {
+          return Pet.destroy({
+            where: {
+              id: result.id
+            }
+          })
+        } else {
+          throw new CustomError(404, notFound)
         }
       })
-        .then((result) => {
-          deletedData = result;
-          if (result) {
-            return Pet.destroy({
-              where: {
-                id: result.id
-              }
-            })
-          } else {
-            throw new CustomError(404, notFound)
-          }
-        })
-        .then((result) => {
-          res.status(200).json({ data: deletedData })
-        }).catch((err) => {
-          console.log(err);
-          next(err);
-        });
-    } else {
-      next(new CustomError(400, "Bad Request"))
-    }
+      .then((result) => {
+        res.status(200).json({ data: deletedData })
+      }).catch(next)
   }
 }
 

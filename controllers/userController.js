@@ -99,12 +99,12 @@ class Controller {
         .then(result => {
             res.status(200).json({
                 first_name: result.first_name,
-                last_name: result.last_name || '',
+                last_name: result.last_name,
                 phone_number: result.phone_number,
                 email: result.email,
                 img_url: result.img_url,
                 city: result.city,
-                bio: result.bio || '',
+                bio: result.bio,
                 id: result.id
             })
         })

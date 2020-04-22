@@ -12,14 +12,10 @@ function authorization(req, res, next) {
     }
   })
     .then((result) => {
-      if (result) {
-        if (result.UserId == userId) {
-          next();
-        } else {
-          throw new CustomError(401, unAuthorize)
-        }
+      if (result.UserId == userId) {
+        next();
       } else {
-        throw new CustomError(404, notFound)
+        throw new CustomError(401, unAuthorize)
       }
     }).catch((err) => {
       next(err);

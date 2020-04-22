@@ -19,9 +19,7 @@ function authentication(req, res, next) {
             throw new CustomError(401, invalid);
           }
         })
-        .catch((err) => {
-          next(new CustomError(401, invalid));
-        });
+        .catch(next)
     } catch (error) {
       next(new CustomError(401, invalid));
     }

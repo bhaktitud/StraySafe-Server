@@ -238,6 +238,63 @@ describe('Thread Router', () => {
                     })
                 })
             });
+            it('Should return a success message: 200', (done) => {
+                supertest(app)
+                .post('/threads')
+                .set('token', token)
+                .send(newThreadData2)
+                .end((err, res) => {
+                    idToFind = res.body.id
+                    supertest(app)
+                    .put(`/threads/statusUnresolved/${idToFind}`)
+                    .send({ description: 'new description' })
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Status updated')
+                        done()
+                    })
+                })
+            });
+            it('Should return a success message: 200', (done) => {
+                supertest(app)
+                .post('/threads')
+                .set('token', token)
+                .send(newThreadData2)
+                .end((err, res) => {
+                    idToFind = res.body.id
+                    supertest(app)
+                    .put(`/threads/statusRequested/${idToFind}`)
+                    .send({ description: 'new description' })
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Status updated')
+                        done()
+                    })
+                })
+            });
+            it('Should return a success message: 200', (done) => {
+                supertest(app)
+                .post('/threads')
+                .set('token', token)
+                .send(newThreadData2)
+                .end((err, res) => {
+                    idToFind = res.body.id
+                    supertest(app)
+                    .put(`/threads/statusResolved/${idToFind}`)
+                    .send({ description: 'new description' })
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end((err, res) => {
+                        expect(err).toBe(null)
+                        expect(res.body).toHaveProperty('msg', 'Status updated')
+                        done()
+                    })
+                })
+            });
         });
 
         describe('Edit thread failed', () => {
