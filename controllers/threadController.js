@@ -1,4 +1,5 @@
 const { Thread, Comment, User } = require('../models')
+const { Op } = require("sequelize");
 
 class Controller {
     static createThread(req, res, next){
@@ -21,6 +22,11 @@ class Controller {
 
     static fetchAllThread(req, res, next){
         Thread.findAll({
+            where: {
+                status: {
+                    [Op.not]: 3
+                }
+            },
             include: [{
                 model: Comment
             }, {
